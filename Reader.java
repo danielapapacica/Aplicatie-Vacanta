@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,11 +27,10 @@ public class Reader {
     }
 
 
-    // citirea datelor din fisier
-    // informatiile despre o anumita locatie sunt separate prin virgula
-    public TreeMap<String, Place> readData(){
+    // citirea datelor din fisier despre lista locatiilor
+    public HashMap<String, Place> readDataPlaces(){
     	
-    	TreeMap<String, Place> places = new TreeMap<String, Place>();
+    	HashMap<String, Place> places = new HashMap<String, Place>();
     	String line = null;
     	String[] lineData;
 
@@ -66,6 +65,58 @@ public class Reader {
         
     }
 
+    // citirea informatiilor dintr-o harta (tari,judete orase)
+    //places este un HashMap avand cheia un oras si valoarea o lista a locatiilor din orasul respectiv
+    public HashMap<String, Country> readDataMap(HashMap<String, ArrayList<Place>> places) {
+    	
+    	HashMap<String, Country> countries = new HashMap<String, Country>();
+    	String line = null;
+    	String[] lineData, lineCities;
+    	ArrayList<String> placesCity = null;
+    	HashMap<String, City> cities = null;
+    	HashMap<String, District> districts = null;
+
+        try {
+        	
+        	line = bf.readLine();
+        	 do {
+        		lineData = line.split(" ");
+        		String countryName = lineData[0];
+        		int numberDistricts = Integer.parseInt(lineData[1]);
+        		districts = new HashMap<String, District>();
+        		
+        		for(int i=0; i < numberDistricts; i++) {
+        			line = bf.readLine();
+        			lineCities = line.split(",");
+        			cities = new HashMap<String, City>();
+        			for(int j = 1; j < lineCities.length; j++) {
+        				if(places.containsKey(lineCities[j])) {
+        					placesCity = new  ArrayList<String>();
+        							for(Place p:places.get(lineCities[j])) {
+        								placesCity.add(p.getName());
+        							}	
+        				}
+        				City city = new City(lineCities[j], placesCity);
+        				cities.put(lineCities[j], city);
+        			}
+        			District district = new District(lineCities[0], cities);	// prima linie e numele judetului de care apartin orasele
+        			districts.put(lineCities[0], district);
+        		}
+        		Country country = new Country(countryName ,districts);
+        		countries.put(countryName, country);
+        		line = bf.readLine();	// citeste randul urmator
+        	}while(line != null);
+
+           
+        } catch (IOException ex) {
+        	Logger.getLogger(Reader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+		return countries;
+        
+    }
+    
+    
     // inchidere fisier
     public void close() {
         try {
@@ -74,4 +125,6 @@ public class Reader {
             Logger.getLogger(Reader.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+
 }

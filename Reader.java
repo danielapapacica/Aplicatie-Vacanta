@@ -28,6 +28,7 @@ public class Reader {
 
 
     // citirea datelor din fisier
+    // informatiile despre o anumita locatie sunt separate prin virgula
     public TreeMap<String, Place> readData(){
     	
     	TreeMap<String, Place> places = new TreeMap<String, Place>();

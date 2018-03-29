@@ -60,7 +60,6 @@ public class Reader {
         } catch (IOException ex) {
         	Logger.getLogger(Reader.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 		return places;
         
     }
@@ -72,12 +71,10 @@ public class Reader {
     	HashMap<String, Country> countries = new HashMap<String, Country>();
     	String line = null;
     	String[] lineData, lineCities;
-    	ArrayList<String> placesCity = null;
     	HashMap<String, City> cities = null;
     	HashMap<String, District> districts = null;
 
-        try {
-        	
+        try {  	
         	line = bf.readLine();
         	 do {
         		lineData = line.split(" ");
@@ -90,8 +87,8 @@ public class Reader {
         			lineCities = line.split(",");
         			cities = new HashMap<String, City>();
         			for(int j = 1; j < lineCities.length; j++) {
+        				ArrayList<String> placesCity = new  ArrayList<String>();
         				if(places.containsKey(lineCities[j])) {
-        					placesCity = new  ArrayList<String>();
         							for(Place p:places.get(lineCities[j])) {
         								placesCity.add(p.getName());
         							}	

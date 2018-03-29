@@ -2,7 +2,10 @@ import java.util.ArrayList;
 
 public class Writer {
     
-    // afisarea informatiei pentru o locatie data
+	/**
+	 * afisarea informatiei pentru o locatie data (practic taskul 1)
+	 * @param place
+	 */
     public void writePlaceInfo(Place place) {
     	System.out.println("Nume locatie: " + place.getName());
     	System.out.println("Oras: " + place.getCity());

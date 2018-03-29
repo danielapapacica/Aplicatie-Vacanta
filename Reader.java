@@ -27,7 +27,9 @@ public class Reader {
     }
 
 
-    // citirea datelor din fisier despre lista locatiilor
+    /**
+     * @return HashMap cu toate locatiile
+     */
     public HashMap<String, Place> readDataPlaces(){
     	
     	HashMap<String, Place> places = new HashMap<String, Place>();
@@ -61,11 +63,14 @@ public class Reader {
         	Logger.getLogger(Reader.class.getName()).log(Level.SEVERE, null, ex);
         }
 		return places;
-        
     }
 
-    // citirea informatiilor dintr-o harta (tari,judete orase)
-    //places este un HashMap avand cheia un oras si valoarea o lista a locatiilor din orasul respectiv
+
+    /**
+     * citirea informatiilor dintr-o harta (tari,judete orase)
+     * @param places un HashMap avand cheia un oras si valoarea o lista a locatiilor din orasul respectiv
+     * @return o structura ierarhica (un HashMap cu tarile existente)
+     */
     public HashMap<String, Country> readDataMap(HashMap<String, ArrayList<Place>> places) {
     	
     	HashMap<String, Country> countries = new HashMap<String, Country>();

@@ -1,0 +1,43 @@
+
+
+
+               Aplicatie Vacanta
+
+    
+    Aplicatia interactioneaza cu utilizatorul, prin consola, il intreba ce task doreste sa execute dintre cele din cerinta (prima, a doua, a treia). 
+
+
+
+    Informatiile referitoare la locatii sunt citite din fisier. Pentru fiecare locatie, informatiile se afla pe aceeasi linie in fisier, despartite de virgula (m-am gandit ca pot avea si locatii/orase compuse precum Satu Mare). Campurile sunt despartite doar de virgula(de exemplu "," si nu ", ").
+
+    Exemplu:
+numeLocatieX,numeOras,80,activitate1,activitate2,activitate3,dataIncepere,dataTerminare
+numeLocatieY,numeOras,35,activitate1,activitate2,dateIncepere,dataTerminara
+
+    Data de incepere si data de terminare a sejurului intr-o locatie au formatul dd/MM/yyyy.
+
+
+
+    Informatiile ce tin de ierarhia tari->judete->orase sunt citie dintr-un al doilea fisier. Pe un rand apare numele unei tari si un numar n. Pe urmatoarele n randuri dedesubt sunt insiruite judetele ce apartin de acea tara. Pe acelasi rand cu judetul respectiv sunt listate orasele ce apartin de acel judet, separate prin virgula (la fel, doar virgula, fara spatiu dupa virgula).
+
+    De exemplu:
+Romania 3
+jud1,oras1_jud1,oras2_jud1,oras3_jud1
+jud2,oras1_jud2
+jud3,oras1_jud3,oras2_jud3,oras3_jud3,oras4_jud3
+Franta 1
+jud1,oras1,oras2
+Spania 2
+jud1,oras1_jud1
+jud2,oras1_jud2,oras2_jud2
+
+    Cele 2 fisiere din care sunt citite informatiile referitoare la harta si locatii sunt date ca parametru in Main.
+
+    Informatiile pe care utilizatorul le solicita sunt afisate in consola.
+
+    Pentru ierarhia tari->judete->orase am folosit mai multe colectii de tip hashMap.
+
+
+
+
+

@@ -14,16 +14,14 @@ public class Main {
 			
 		// accesarea fisierului ce contine o "harta", adica un fisier cu ierarhia tari,judete,orase
 		Reader readerMap = new Reader(args[1]);
-		
-		// ma folosesc de o functie din cadrul taskului 2 pentru a crea ierarhia de tari, judete, orase
-		HashMap<String, Country> countries = readerMap.readDataMap(Task2.transformPlacesMap(places));
+		AppData appData = readerMap.readDataMap(places);
 		
 		readerMap.close();
 	
 		Writer writer = new Writer();
 		
 		// executia comenzilor
-		CommandExecuter ex = new CommandExecuter(places, countries, scanner, writer);
+		CommandExecuter ex = new CommandExecuter(places, appData, scanner, writer);
 		ex.executeCommands();
 
 	}

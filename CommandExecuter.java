@@ -13,20 +13,20 @@ import java.util.Scanner;
 public class CommandExecuter {
 	
 	private HashMap<String, Place> places;
-	private HashMap<String, Country> countries;
+	private AppData appData;
 	private Scanner scanner;
 	private Writer writer;
 	private Task1 task1Solver;
 	private Task2 task2Solver;
 	private Task3 task3Solver;
 	
-	public CommandExecuter(HashMap<String, Place> places, HashMap<String, Country> countries, Scanner scanner, Writer writer) {
+	public CommandExecuter(HashMap<String, Place> places, AppData appData, Scanner scanner, Writer writer) {
 		this.places = places;
-		this.countries = countries;
+		this.appData = appData;
 		this.scanner = scanner;
 		this.writer = writer;
 		task1Solver = new Task1(places, scanner);
-		task2Solver = new Task2(places,countries);
+		task2Solver = new Task2(places, appData);
 		task3Solver = new Task3(places);
 	}
 

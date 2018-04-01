@@ -12,12 +12,12 @@ public class Task2 {
 	
 	private String location;
 	private HashMap<String, Place> places;
-	private HashMap<String, Country> countries;
+	private AppData appData;
 	private LocalDate startDate, endDate;
 
-	public Task2(HashMap<String, Place> places, HashMap<String, Country> countries) {
+	public Task2(HashMap<String, Place> places, AppData appData) {
 		this.places = places;
-		this.countries = countries;
+		this.appData = appData;
 	}
 	
 	
@@ -28,27 +28,6 @@ public class Task2 {
 		this.endDate = endDate;
 	}
 	
-	
-	/** 
- 	 * 
-	 * @param places hashmap-ul ce contine locatiile
-	 * @return un hashMap structurat astfel incat locatiile dintr-un oras sa fie usor accesate avand numele orasului
-	 */
-	public static HashMap<String, ArrayList<Place>> transformPlacesMap(HashMap<String, Place> places){
-	
-		HashMap<String, ArrayList<Place>> transformedPlaces = new HashMap<String, ArrayList<Place>>();
-		for(Place p:places.values()) {
-			if(transformedPlaces.containsKey(p.getCity())) {
-				transformedPlaces.get(p.getCity()).add(p);
-			}
-			else {
-				ArrayList<Place> placesCity = new ArrayList<Place>();
-				placesCity.add(p);
-				transformedPlaces.put(p.getCity(), placesCity);
-			}
-		}
-		return transformedPlaces;	
-	}
 	
 	/**
 	 * 
@@ -68,6 +47,24 @@ public class Task2 {
 	}
 	
 	
+	
+	/**
+	 * cauta cele mai bune locatii dintr-un oras
+	 * @param top5Places cele mai bune locatii gasite pana acum
+	 * @param cityName orasul in care le cautam
+	 * @return
+	 */
+	public PriorityQueue<Place> searchInCity(PriorityQueue<Place> top5Places, String cityName){
+		
+		for(String locationName:appData.getCities().get(cityName)) {
+			if(betterLocation(top5Places, places.get(locationName))) {
+				if(top5Places.size() == 5)
+					top5Places.poll();
+				top5Places.add(places.get(locationName));
+			}
+		}
+		return top5Places;
+	}
 
 	/**
 	 * 
@@ -77,57 +74,23 @@ public class Task2 {
 	public ArrayList<String> top5(){
 		
 		PriorityQueue<Place> top5Places= new PriorityQueue<Place>(new PriceComparator());
+		
+
+		if(appData.getCities().containsKey(location)) {				//location e un oras
+			top5Places = searchInCity(top5Places, location);
 			
-		//verificam daca zona introdusa de utilizator este o tara/oras/judet
-		// si retinem cele mai bune locuri de vacanta din zona respectiva
-		if(countries.containsKey(location)) {	//daca e o tara
-			Country country = countries.get(location);
-			for(String districtKey : country.getDistricts().keySet()) {
-				District district = country.getDistricts().get(districtKey);
-				for(String cityKey : district.getPlaces().keySet()) {
-					City city = district.getPlaces().get(cityKey);
-					for(String locationKey : city.getPlaces()){
-						if(betterLocation(top5Places, places.get(locationKey))) {
-							if(top5Places.size() == 5)
-								top5Places.poll();
-							top5Places.add(places.get(locationKey));
-						}	
-					}
-				}
+		}else if(appData.getDistricts().containsKey(location)) {	//location e un judet
+			for(String cityName:appData.getDistricts().get(location)) {
+				top5Places = searchInCity(top5Places, cityName);
 			}
-		}else {	// daca gasim un oras cu denumirea locatiei cautate
-			
-			HashMap<String, ArrayList<Place>> transformedPlacesMap = transformPlacesMap(places);
-			if(transformedPlacesMap.containsKey(location)){		// daca e un oras
-				for(Place p: transformedPlacesMap.get(location)) {
-					if(betterLocation(top5Places, p)) {
-						if(top5Places.size() == 5)
-							top5Places.poll();
-						top5Places.add(p);
-					}
-				}
-			}else { // daca gasim un judet cu denumirea locatiei introduse
-				for(String countryKey: countries.keySet()) {
-					Country country = countries.get(countryKey);
-					for(String districtKey : country.getDistricts().keySet()) {
-						if(districtKey.equals(location)) {			// s-a gasit un judetul
-							District district = country.getDistricts().get(districtKey);
-							for(String cityKey : district.getPlaces().keySet()) {
-								City city = district.getPlaces().get(cityKey);
-								for(String locationKey : city.getPlaces()){
-									if(betterLocation(top5Places, places.get(locationKey))) {
-										if(top5Places.size() == 5)
-											top5Places.poll();
-									top5Places.add(places.get(locationKey));
-									}					
-								}
-							}
-						}
-					}
+		}else if(appData.getCountries().containsKey(location)) {	// este o tara
+			for(String districtName:appData.getCountries().get(location)) {
+				for(String cityName:appData.getDistricts().get(districtName)) {
+					top5Places = searchInCity(top5Places, cityName);
 				}
 			}
 		}
-			
+				
 		if(top5Places.isEmpty())	return null;	// nu s-a gasit nicio locatie in acest oras/judet/tara
 		ArrayList<String> placesList = new ArrayList<String>();
 		for(Place p:top5Places) {

@@ -28,7 +28,7 @@ public class Reader {
 
 
     /**
-     * @return HashMap cu toate locatiile
+     * @return HashMap cu toate locatiile de vizitat
      */
     public HashMap<String, Place> readDataPlaces(){
     	
@@ -65,19 +65,42 @@ public class Reader {
 		return places;
     }
 
+    
+    
+	/** 
+ 	 * 
+	 * @param places hashmap-ul ce contine locatiile
+	 * @return un hashMap structurat astfel incat locatiile dintr-un oras sa fie usor accesate avand numele orasului
+	 */
+	public static HashMap<String, ArrayList<String>> transformPlacesMap(HashMap<String, Place> places){
+	
+		HashMap<String, ArrayList<String>> transformedPlaces = new HashMap<String, ArrayList<String>>();
+		for(Place p:places.values()) {
+			if(transformedPlaces.containsKey(p.getCity())) {
+				transformedPlaces.get(p.getCity()).add(p.getName());
+			}
+			else {
+				ArrayList<String> placesCity = new ArrayList<String>();
+				placesCity.add(p.getName());
+				transformedPlaces.put(p.getCity(), placesCity);
+			}
+		}
+		return transformedPlaces;	
+	}
+	 
 
     /**
      * citirea informatiilor dintr-o harta (tari,judete orase)
-     * @param places un HashMap avand cheia un oras si valoarea o lista a locatiilor din orasul respectiv
-     * @return o structura ierarhica (un HashMap cu tarile existente)
+     * @param HashMap cu locatiile
+     * @return un obiect de tip AppData avand HashMap pt tari/orase/judete accesate usor prin nume
      */
-    public HashMap<String, Country> readDataMap(HashMap<String, ArrayList<Place>> places) {
+    public AppData readDataMap(HashMap<String, Place> places) {
     	
-    	HashMap<String, Country> countries = new HashMap<String, Country>();
+    	HashMap<String, ArrayList<String>> countries = new HashMap<String, ArrayList<String>>();
     	String line = null;
     	String[] lineData, lineCities;
-    	HashMap<String, City> cities = null;
-    	HashMap<String, District> districts = null;
+    	HashMap<String, ArrayList<String>> districts = new HashMap<String, ArrayList<String>>();
+    	HashMap<String, ArrayList<String>> cities = transformPlacesMap(places);
 
         try {  	
         	line = bf.readLine();
@@ -85,37 +108,30 @@ public class Reader {
         		lineData = line.split(" ");
         		String countryName = lineData[0];
         		int numberDistricts = Integer.parseInt(lineData[1]);
-        		districts = new HashMap<String, District>();
-        		
+        		ArrayList<String> districtList = new ArrayList<String>();
+        		countries.put(countryName, districtList);	
         		for(int i=0; i < numberDistricts; i++) {
         			line = bf.readLine();
         			lineCities = line.split(",");
-        			cities = new HashMap<String, City>();
+        			String districtName = lineCities[0];
+        			countries.get(countryName).add(districtName);
+        			ArrayList<String> citiesList= new ArrayList<String>();
+        			districts.put(districtName, citiesList);
         			for(int j = 1; j < lineCities.length; j++) {
-        				ArrayList<String> placesCity = new  ArrayList<String>();
-        				if(places.containsKey(lineCities[j])) {
-        							for(Place p:places.get(lineCities[j])) {
-        								placesCity.add(p.getName());
-        							}	
-        				}
-        				City city = new City(lineCities[j], placesCity);
-        				cities.put(lineCities[j], city);
+        				String cityName = lineCities[j];
+        				districts.get(districtName).add(cityName);
         			}
-        			District district = new District(lineCities[0], cities);	// prima linie e numele judetului de care apartin orasele
-        			districts.put(lineCities[0], district);
         		}
-        		Country country = new Country(countryName ,districts);
-        		countries.put(countryName, country);
-        		line = bf.readLine();	// citeste randul urmator
+        		
+        		line = bf.readLine();
         	}while(line != null);
-
-           
+        	
         } catch (IOException ex) {
         	Logger.getLogger(Reader.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-		return countries;
-        
+        AppData appData = new AppData(cities, districts, countries);
+		return appData;    
     }
     
     

@@ -35,7 +35,7 @@ jud2,oras1_jud2,oras2_jud2
 
     Informatiile pe care utilizatorul le solicita sunt afisate in consola.
 
-    Pentru ierarhia tari->judete->orase am folosit mai multe colectii de tip hashMap.
+    Pentru ierarhia tari->judete->orase am folosit mai multe colectii de tip HashMap. De exemplu pt tari un HashMap folosind o cheie cu numele tarii si valoarea o lista a numelor judetelor din acea tara. Similar am facut si pentru judete si orase deoarece in acest fel toate campurile sunt usor de accesat si de asemenea verificarea existentei tarii/orasului/judetului X este are complexitate constanta. Salvez structurile intr-un obiect AppData.
 
 
 
